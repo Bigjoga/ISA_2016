@@ -1,0 +1,10 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import java.util.List;
+
+import entity.Jelovnik;
+import entity.Restoran;
+
+public interface JelovnikDaoLocal extends GenericDaoLocal<Jelovnik, Integer> {
+	public List<Jelovnik> findJelovniciRestorana(Restoran res);
+}

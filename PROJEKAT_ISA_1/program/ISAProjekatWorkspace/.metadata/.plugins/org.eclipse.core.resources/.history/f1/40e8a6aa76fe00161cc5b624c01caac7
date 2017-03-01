@@ -1,0 +1,144 @@
+package server;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="Sto")
+@NamedQueries({
+	@NamedQuery(name = "findStoloviRestorana", query = "SELECT s FROM Sto s WHERE s.restoran = :restoran")
+})
+public class Sto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9141550973130229988L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID_stola", unique = true, nullable = false)
+	private Integer id;
+
+	@Column(name = "Naziv_stola", unique = false, nullable = false)
+	private String nazivStola;
+	
+	@Column(name = "PozX_stola", unique = false, nullable = false)
+	private Integer pozX;
+
+	@Column(name = "PozY_stola", unique = false, nullable = false)
+	private Integer pozY;
+	
+	@Column(name = "Broj_mesta", unique = false, nullable = false)
+	private Integer brojMesta;
+	
+	@ManyToOne
+	@JoinColumn(name = "Restoran_ID", referencedColumnName = "ID_restorana", nullable = true)
+	private Restoran restoran;
+		
+	@OneToMany(cascade = { ALL }, fetch = EAGER, mappedBy = "sto")
+	private Set<RezervisaniStolovi> rezervisaniStolovi = new HashSet<RezervisaniStolovi>();
+
+	public void add(RezervisaniStolovi rs) {
+		if (rs.getSto() != null)
+			rs.getSto().getRezervisaniStolovi().remove(rs);
+		rs.setSto(this);
+		rezervisaniStolovi.add(rs);
+	}
+
+	public void remove(RezervisaniStolovi rs) {
+		rs.setSto(null);
+		rezervisaniStolovi.remove(rs);
+	}
+	
+	public Sto() {
+		super();
+	}
+
+	public Sto(String nazivStola, Integer pozX, Integer pozY,
+			Integer brojMesta, Restoran restoran) {
+		super();
+		this.nazivStola = nazivStola;
+		this.pozX = pozX;
+		this.pozY = pozY;
+		this.brojMesta = brojMesta;
+		this.restoran = restoran;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getNazivStola() {
+		return nazivStola;
+	}
+
+	public void setNazivStola(String nazivStola) {
+		this.nazivStola = nazivStola;
+	}
+
+	public Integer getPozX() {
+		return pozX;
+	}
+
+	public void setPozX(Integer pozX) {
+		this.pozX = pozX;
+	}
+
+	public Integer getPozY() {
+		return pozY;
+	}
+
+	public void setPozY(Integer pozY) {
+		this.pozY = pozY;
+	}
+
+	public Integer getBrojMesta() {
+		return brojMesta;
+	}
+
+	public void setBrojMesta(Integer brojMesta) {
+		this.brojMesta = brojMesta;
+	}
+
+	public Restoran getRestoran() {
+		return restoran;
+	}
+
+	public void setRestoran(Restoran restoran) {
+		this.restoran = restoran;
+	}
+
+	public Set<RezervisaniStolovi> getRezervisaniStolovi() {
+		return rezervisaniStolovi;
+	}
+
+	public void setRezervisaniStolovi(Set<RezervisaniStolovi> rezervisaniStolovi) {
+		this.rezervisaniStolovi = rezervisaniStolovi;
+	}
+
+	public String toString() {
+		return "(Sto)[id=" + id + ",id restorana=" + restoran.getId() + "]";
+	}
+	
+}

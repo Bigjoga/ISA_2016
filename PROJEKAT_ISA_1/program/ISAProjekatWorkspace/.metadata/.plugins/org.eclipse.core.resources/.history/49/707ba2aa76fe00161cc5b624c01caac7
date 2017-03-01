@@ -1,0 +1,158 @@
+package server;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="Rezervacija")
+@NamedQueries({
+	@NamedQuery(name = "findRezervacijeZaSto", query = "SELECT r FROM Rezervacija r, RezervisaniStolovi rs WHERE rs.sto = :sto AND rs.rezervacija = r")
+})
+public class Rezervacija implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7218415487476389722L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID_rezervacije", unique = true, nullable = false)
+	private Integer id;
+
+	@Column(name = "DatumVreme", unique = false, nullable = false)
+	private Date datumVreme;
+
+	@Column(name = "Trajanje", unique = false, nullable = false)
+	private Integer trajanje;
+	
+	@ManyToOne
+	@JoinColumn(name = "Korisnik_ID", referencedColumnName = "ID_korisnika", nullable = false)
+	private Korisnik korisnik;
+	
+	@ManyToOne
+	@JoinColumn(name = "Restoran_ID", referencedColumnName = "ID_restorana", nullable = false)
+	private Restoran restoran;
+	
+	@OneToMany(cascade = { ALL }, fetch = EAGER, mappedBy = "rezervacija")
+	private Set<PozivPrijatelja> pozvaniPrijateljiInfo = new HashSet<PozivPrijatelja>();
+
+	public void add(PozivPrijatelja pp) {
+		if (pp.getRezervacija() != null)
+			pp.getRezervacija().getPozvaniPrijateljiInfo().remove(pp);
+		pp.setRezervacija(this);
+		pozvaniPrijateljiInfo.add(pp);
+	}
+
+	public void remove(PozivPrijatelja pp) {
+		pp.setRezervacija(null);
+		pozvaniPrijateljiInfo.remove(pp);
+	}
+	
+	@OneToMany(cascade = { ALL }, fetch = EAGER, mappedBy = "rezervacija")
+	private Set<RezervisaniStolovi> rezervisaniStolovi = new HashSet<RezervisaniStolovi>();
+
+	public void add(RezervisaniStolovi rs) {
+		if (rs.getRezervacija() != null)
+			rs.getRezervacija().getRezervisaniStolovi().remove(rs);
+		rs.setRezervacija(this);
+		rezervisaniStolovi.add(rs);
+	}
+
+	public void remove(RezervisaniStolovi rs) {
+		rs.setRezervacija(null);
+		rezervisaniStolovi.remove(rs);
+	}
+	
+	public Rezervacija() {
+		super();
+	}
+
+	public Rezervacija(Date datumVreme, Integer trajanje, Korisnik korisnik,
+			Restoran restoran) {
+		super();
+		this.datumVreme = datumVreme;
+		this.trajanje = trajanje;
+		this.korisnik = korisnik;
+		this.restoran = restoran;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Date getDatumVreme() {
+		return datumVreme;
+	}
+
+	public void setDatumVreme(Date datumVreme) {
+		this.datumVreme = datumVreme;
+	}
+
+	public Integer getTrajanje() {
+		return trajanje;
+	}
+
+	public void setTrajanje(Integer trajanje) {
+		this.trajanje = trajanje;
+	}
+
+	public Korisnik getKorisnik() {
+		return korisnik;
+	}
+
+	public void setKorisnik(Korisnik korisnik) {
+		this.korisnik = korisnik;
+	}
+
+	public Set<PozivPrijatelja> getPozvaniPrijateljiInfo() {
+		return pozvaniPrijateljiInfo;
+	}
+
+	public void setPozvaniPrijateljiInfo(Set<PozivPrijatelja> pozvaniPrijateljiInfo) {
+		this.pozvaniPrijateljiInfo = pozvaniPrijateljiInfo;
+	}
+
+	public Set<RezervisaniStolovi> getRezervisaniStolovi() {
+		return rezervisaniStolovi;
+	}
+
+	public void setRezervisaniStolovi(Set<RezervisaniStolovi> rezervisaniStolovi) {
+		this.rezervisaniStolovi = rezervisaniStolovi;
+	}
+	
+	public Restoran getRestoran() {
+		return restoran;
+	}
+
+	public void setRestoran(Restoran restoran) {
+		this.restoran = restoran;
+	}
+
+	public String toString() {
+		return "(Rezervacija)[id=" + id + ",id restorana=" + restoran.getId() + "]";
+	}
+	
+	
+}

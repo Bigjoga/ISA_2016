@@ -1,0 +1,70 @@
+package servlet;
+
+import java.io.IOException;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import entity.Korisnik;
+import entity.Restoran;
+import session.RestoranDaoLocal;
+
+public class RestoranCreateController extends HttpServlet {
+
+	private static final long serialVersionUID = -5245480187867346707L;
+
+	private static Logger log = Logger.getLogger(RestoranCreateController.class);
+	
+	@EJB
+	private RestoranDaoLocal restoranDao;
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("admin")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			
+			System.out.println("************dodavanje novog restorana zapoceto");
+			Korisnik admin = (Korisnik)request.getSession().getAttribute("admin");
+			System.out.println("admin: " + admin);;
+			
+			//****dodavanje restorana**********
+			Restoran noviRestoran = new Restoran();
+			noviRestoran.setNazivRestorana(request.getParameter("naziv"));
+			noviRestoran.setOpisRestorana(request.getParameter("opis"));
+			noviRestoran.setAdresa(request.getParameter("adresa"));
+			noviRestoran.setDimX(Integer.parseInt(request.getParameter("dimX")));
+			noviRestoran.setDimY(Integer.parseInt(request.getParameter("dimY")));
+			noviRestoran.setProsecnaOcena(0.0);
+			noviRestoran.setUkupanBrojOcena(0);
+			
+			restoranDao.persist(noviRestoran);
+			System.out.println("dodat novi restoran: " + noviRestoran);
+			//*****************************
+			
+			getServletContext().getRequestDispatcher("/PocetnaAdminController").forward(request, response);
+			return;
+			
+		} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+	
+	
+}

@@ -1,0 +1,28 @@
+package session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.persistence.Query;
+
+import entity.Rezervacija;
+import entity.Sto;
+
+@Stateless
+@Local(RezervacijaDaoLocal.class)
+public class RezervacijaDaoBean extends GenericDaoBean<Rezervacija, Integer> implements RezervacijaDaoLocal {
+
+	public ArrayList<Rezervacija> findRezervacijeZaSto(Sto sto) {
+		ArrayList<Rezervacija> ret = new ArrayList<Rezervacija>();
+		Query q = em
+				.createNamedQuery("findRezervacijeZaSto");
+		q.setParameter("sto", sto);
+		for (Object o : q.getResultList()) {
+			ret.add((Rezervacija)o);
+		}
+		
+		return ret;
+	}
+
+}

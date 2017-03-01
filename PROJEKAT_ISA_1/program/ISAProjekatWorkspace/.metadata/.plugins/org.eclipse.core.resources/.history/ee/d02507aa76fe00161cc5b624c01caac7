@@ -1,0 +1,73 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.JelovnikDaoLocal;
+import server.Jelovnik;
+import server.Restoran;
+
+public class JelovnikCreateController extends HttpServlet {
+
+	private static final long serialVersionUID = -7444644937233763029L;
+	
+	private static Logger log = Logger.getLogger(JelovnikCreateController.class);
+	
+	@EJB
+	private JelovnikDaoLocal jelovnikDao;
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("menadzer")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+
+			HttpSession session = request.getSession(true);
+			Restoran restoran = (Restoran)session.getAttribute("restoran");
+			
+
+			System.out.println("************dodavanje jelovnika zapoceto");
+			//dodavanje jelovnika**********************************************
+			String naziv = request.getParameter("naziv");
+			System.out.println("naziv: " + naziv);
+			System.out.println("restoran: " + restoran);
+			if (naziv == null) {
+				response.sendRedirect(response.encodeURL("/JelovniciMenadzerController"));
+				return;
+			}
+			Jelovnik jlk = new Jelovnik();
+			jlk.setNazivJelovnika(naziv);
+			jlk.setRestoran(restoran);
+			System.out.println("id novokreiranog jelovnika: " + jlk.getId());
+			jelovnikDao.persist(jlk);
+			//response.sendRedirect(response.encodeRedirectURL("/JelovniciMenadzerController"));
+			getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+			return;
+			
+			
+			
+		/*} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		*/} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}

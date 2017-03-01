@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   
+   <servlet>
+      <servlet-name>LogoutController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.LogoutController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PrepareUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PrepareUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PrepareCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PrepareCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>CreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.CreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>UpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.UpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>LoginController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.LoginController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>ReadController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.ReadController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PocetnaAdminController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PocetnaAdminController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JelovniciMenadzerController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JelovniciMenadzerController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JelovnikReadController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JelovnikReadController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JelovnikCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JelovnikCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JelovnikDeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JelovnikDeleteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreUpJelovnikController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreUpJelovnikController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JelovnikUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JelovnikUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>DeleteStavkuIzJelovnikaController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.DeleteStavkuIzJelovnikaController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreCrStavkuZaJelovnikController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreCrStavkuZaJelovnikController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>StoCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.StoCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>StavkaJelovnikaCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.StavkaJelovnikaCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>StoloviMenadzerContoller</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.StoloviMenadzerContoller</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreCrStoController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreCrStoController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>StoDeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.StoDeleteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreUpStoController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreUpStoController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>StoUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.StoUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RestoranCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RestoranCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RestoranDeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RestoranDeleteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreUpRestoranController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreUpRestoranController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>DeleteMenadzeraIzRestoranaController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.DeleteMenadzeraIzRestoranaController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RestoranUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RestoranUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreCrMenadzerRestoranaController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreCrMenadzerRestoranaController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>MenadzerCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.MenadzerCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PosetilacReadController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PosetilacReadController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PosetilacUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PosetilacUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PrijateljCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PrijateljCreateController</servlet-class>
+   </servlet>  
+   
+   <servlet>
+      <servlet-name>PrijateljiDeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PrijateljiDeleteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PrijateljiReadController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PrijateljiReadController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RestoraniPosetilacController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RestoraniPosetilacController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PosetePosetilacController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PosetePosetilacController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RezervacijaKorak1Controller</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RezervacijaKorak1Controller</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RezervacijaKorak2Controller</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RezervacijaKorak2Controller</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RezervacijaKorak3Controller</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RezervacijaKorak3Controller</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RezervacijaCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.RezervacijaCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PozivnicaController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PozivnicaController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PozivnicaUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PozivnicaUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PozivnicaDeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PozivnicaDeleteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreOcenaPoseteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreOcenaPoseteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>OcenaPoseteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.OcenaPoseteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreLoginController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreLoginController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PosetilacCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PosetilacCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PotvrdaRegistracijeController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PotvrdaRegistracijeController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JelaAdminController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JelaAdminController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JeloCreateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JeloCreateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JeloDeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JeloDeleteController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>PreUpJeloController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.PreUpJeloController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>JeloUpdateController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.JeloUpdateController</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>DeleteController</servlet-name>
+      <servlet-class>rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet.DeleteController</servlet-class>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>LogoutController</servlet-name>
+      <url-pattern>/LogoutController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PrepareUpdateController</servlet-name>
+      <url-pattern>/PrepareUpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PrepareCreateController</servlet-name>
+      <url-pattern>/PrepareCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>CreateController</servlet-name>
+      <url-pattern>/CreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>UpdateController</servlet-name>
+      <url-pattern>/UpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>LoginController</servlet-name>
+      <url-pattern>/LoginController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>ReadController</servlet-name>
+      <url-pattern>/ReadController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PocetnaAdminController</servlet-name>
+      <url-pattern>/PocetnaAdminController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JelovniciMenadzerController</servlet-name>
+      <url-pattern>/JelovniciMenadzerController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JelovnikReadController</servlet-name>
+      <url-pattern>/JelovnikReadController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JelovnikCreateController</servlet-name>
+      <url-pattern>/JelovnikCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JelovnikDeleteController</servlet-name>
+      <url-pattern>/JelovnikDeleteController</url-pattern>
+   </servlet-mapping>
+	
+	<servlet-mapping>
+      <servlet-name>PreUpJelovnikController</servlet-name>
+      <url-pattern>/PreUpJelovnikController</url-pattern>
+   </servlet-mapping>
+	
+   <servlet-mapping>
+      <servlet-name>JelovnikUpdateController</servlet-name>
+      <url-pattern>/JelovnikUpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>DeleteStavkuIzJelovnikaController</servlet-name>
+      <url-pattern>/DeleteStavkuIzJelovnikaController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreCrStavkuZaJelovnikController</servlet-name>
+      <url-pattern>/PreCrStavkuZaJelovnikController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>StavkaJelovnikaCreateController</servlet-name>
+      <url-pattern>/StavkaJelovnikaCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>StoloviMenadzerContoller</servlet-name>
+      <url-pattern>/StoloviMenadzerContoller</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreCrStoController</servlet-name>
+      <url-pattern>/PreCrStoController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>StoCreateController</servlet-name>
+      <url-pattern>/StoCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>StoDeleteController</servlet-name>
+      <url-pattern>/StoDeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreUpStoController</servlet-name>
+      <url-pattern>/PreUpStoController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>StoUpdateController</servlet-name>
+      <url-pattern>/StoUpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RestoranCreateController</servlet-name>
+      <url-pattern>/RestoranCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RestoranDeleteController</servlet-name>
+      <url-pattern>/RestoranDeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreUpRestoranController</servlet-name>
+      <url-pattern>/PreUpRestoranController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>DeleteMenadzeraIzRestoranaController</servlet-name>
+      <url-pattern>/DeleteMenadzeraIzRestoranaController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RestoranUpdateController</servlet-name>
+      <url-pattern>/RestoranUpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreCrMenadzerRestoranaController</servlet-name>
+      <url-pattern>/PreCrMenadzerRestoranaController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>MenadzerCreateController</servlet-name>
+      <url-pattern>/MenadzerCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PosetilacReadController</servlet-name>
+      <url-pattern>/PosetilacReadController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PosetilacUpdateController</servlet-name>
+      <url-pattern>/PosetilacUpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PrijateljCreateController</servlet-name>
+      <url-pattern>/PrijateljCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PrijateljiDeleteController</servlet-name>
+      <url-pattern>/PrijateljiDeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PrijateljiReadController</servlet-name>
+      <url-pattern>/PrijateljiReadController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RestoraniPosetilacController</servlet-name>
+      <url-pattern>/RestoraniPosetilacController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PosetePosetilacController</servlet-name>
+      <url-pattern>/PosetePosetilacController</url-pattern>
+   </servlet-mapping>	
+	   
+   <servlet-mapping>
+      <servlet-name>RezervacijaKorak1Controller</servlet-name>
+      <url-pattern>/RezervacijaKorak1Controller</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RezervacijaKorak2Controller</servlet-name>
+      <url-pattern>/RezervacijaKorak2Controller</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RezervacijaKorak3Controller</servlet-name>
+      <url-pattern>/RezervacijaKorak3Controller</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RezervacijaCreateController</servlet-name>
+      <url-pattern>/RezervacijaCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PozivnicaController</servlet-name>
+      <url-pattern>/PozivnicaController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PozivnicaUpdateController</servlet-name>
+      <url-pattern>/PozivnicaUpdateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PozivnicaDeleteController</servlet-name>
+      <url-pattern>/PozivnicaDeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreOcenaPoseteController</servlet-name>
+      <url-pattern>/PreOcenaPoseteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>OcenaPoseteController</servlet-name>
+      <url-pattern>/OcenaPoseteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreLoginController</servlet-name>
+      <url-pattern>/PreLoginController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PosetilacCreateController</servlet-name>
+      <url-pattern>/PosetilacCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PotvrdaRegistracijeController</servlet-name>
+      <url-pattern>/PotvrdaRegistracijeController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JelaAdminController</servlet-name>
+      <url-pattern>/JelaAdminController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JeloCreateController</servlet-name>
+      <url-pattern>/JeloCreateController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JeloDeleteController</servlet-name>
+      <url-pattern>/JeloDeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>PreUpJeloController</servlet-name>
+      <url-pattern>/PreUpJeloController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>JeloUpdateController</servlet-name>
+      <url-pattern>/JeloUpdateController</url-pattern>
+   </servlet-mapping>
+	   
+   <servlet-mapping>
+      <servlet-name>DeleteController</servlet-name>
+      <url-pattern>/DeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <welcome-file-list>
+   		<welcome-file>/login.jsp</welcome-file>
+   </welcome-file-list>
+   <error-page>
+		<exception-type>
+			java.lang.Throwable
+		</exception-type>
+		<location>/error.jsp</location>
+   </error-page>
+   <error-page>
+   		<error-code>404</error-code>
+   		<location>/404.jsp</location>
+   </error-page> 
+
+</web-app>

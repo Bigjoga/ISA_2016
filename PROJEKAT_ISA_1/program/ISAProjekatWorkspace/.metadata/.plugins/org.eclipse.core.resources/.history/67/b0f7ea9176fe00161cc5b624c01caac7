@@ -1,0 +1,102 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.Korisnik;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.PozivPrijatelja;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.KorisnikDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.PozivPrijateljaDaoLocal;
+
+public class PreOcenaPoseteController extends HttpServlet {
+
+	private static final long serialVersionUID = -5689029932190861703L;
+
+	private static Logger log = Logger.getLogger(PreOcenaPoseteController.class);
+	
+	@EJB
+	private KorisnikDaoLocal korisnikDao;
+	
+	@EJB
+	private PozivPrijateljaDaoLocal pozivPrijateljaDao;
+	
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("posetilac")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			System.out.println("************priprema za ocenu posete zapoceta");
+			Korisnik posetilac = (Korisnik)request.getSession().getAttribute("posetilac");
+			System.out.println("posetilac: " + posetilac);
+			
+			String pozivnicaId = request.getParameter("id");
+			if (pozivnicaId == null) {
+				response.sendRedirect(response.encodeURL("./PosetePosetilacController"));
+				return;
+			}
+			
+			PozivPrijatelja pp = pozivPrijateljaDao.findById(Integer.parseInt(pozivnicaId));
+			//ne moze se oceniti poseta koja je vec ocenjena
+			if (pp.getOcena()>=1.0) {
+				response.sendRedirect(response.encodeURL("./PosetePosetilacController"));
+				return;
+			}
+			
+			request.setAttribute("poziv", pp);
+			System.out.println("pozivnica: " + pp);
+			//samo korisnik kome je pozivnica namenjena moze da je vidi
+			if (!pp.getKorisnik().getId().toString().equals(posetilac.getId().toString())) {
+				response.sendRedirect(response.encodeURL("./PosetePosetilacController"));
+				return;
+			}
+			
+			ArrayList<Korisnik> ostaliGosti = new ArrayList<Korisnik>();
+			for (Korisnik kor : pozivPrijateljaDao.findDrugiPosetiociRezervacije(pp.getRezervacija(), posetilac)) {
+				//kreatora rezervacije izdvajam iz liste gostiju (on ce se posebno prikazati)
+				if (!kor.getId().toString().equals(pp.getRezervacija().getKorisnik().getId().toString())) {
+					ostaliGosti.add(kor);
+				}
+			}
+			System.out.println("broj ostalih gostiju: " + ostaliGosti.size());
+			request.setAttribute("gosti", ostaliGosti);
+			System.out.println("datum: " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(pp.getRezervacija().getDatumVreme()));
+			request.setAttribute("datumStr", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(pp.getRezervacija().getDatumVreme()));
+			System.out.println("naziv: " + pp.getRezervacija().getRestoran().getNazivRestorana());
+			request.setAttribute("naziv", pp.getRezervacija().getRestoran().getNazivRestorana());
+			request.setAttribute("trajanje", pp.getRezervacija().getTrajanje());
+			request.setAttribute("autor", pp.getRezervacija().getKorisnik().getIme());
+			
+			
+			
+			System.out.println("parametri za ocenu posete prosledjeni na jsp");
+			getServletContext().getRequestDispatcher("/ocenaPosete.jsp").forward(request, response);
+			return;
+			
+		} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+	
+	
+}

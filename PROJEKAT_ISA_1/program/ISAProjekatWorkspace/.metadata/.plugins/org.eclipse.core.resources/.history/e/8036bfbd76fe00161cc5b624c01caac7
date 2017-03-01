@@ -1,0 +1,7 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import entity.UlogaKorisnika;
+
+public interface UlogaKorisnikaDaoLocal extends GenericDaoLocal<UlogaKorisnika, Integer> {
+	public UlogaKorisnika findUlogaPoImenu(int x);
+}

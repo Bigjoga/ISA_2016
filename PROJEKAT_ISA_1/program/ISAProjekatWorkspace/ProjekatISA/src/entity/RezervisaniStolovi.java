@@ -1,0 +1,75 @@
+package entity;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="RezervisaniStolovi")
+public class RezervisaniStolovi implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3549041720201033894L;
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID_rezervisanogStola", unique = true, nullable = false)
+	private Integer id;
+	
+	@ManyToOne
+	@JoinColumn(name = "Rezervacija_ID", referencedColumnName = "ID_rezervacije", nullable = false)
+	private Rezervacija rezervacija;
+
+	@ManyToOne
+	@JoinColumn(name = "Sto_ID", referencedColumnName = "ID_stola", nullable = false)
+	private Sto sto;
+
+	public RezervisaniStolovi() {
+		super();
+	}
+	
+	public RezervisaniStolovi(Rezervacija rezervacija, Sto sto) {
+		super();
+		this.rezervacija = rezervacija;
+		this.sto = sto;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Rezervacija getRezervacija() {
+		return rezervacija;
+	}
+
+	public void setRezervacija(Rezervacija rezervacija) {
+		this.rezervacija = rezervacija;
+	}
+
+	public Sto getSto() {
+		return sto;
+	}
+
+	public void setSto(Sto sto) {
+		this.sto = sto;
+	}
+	
+	public String toString() {
+		return "(Rezervisan sto)[id=" + id + ",id rezervacije=" + rezervacija.getId() + ",id stola=" + sto.getId() + "]";
+	}
+
+}

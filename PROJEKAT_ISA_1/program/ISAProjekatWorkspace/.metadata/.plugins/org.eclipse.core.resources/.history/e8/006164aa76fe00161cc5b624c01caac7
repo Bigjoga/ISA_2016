@@ -1,0 +1,174 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.RestoranDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.RezervacijaDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.StoDaoLocal;
+import server.Korisnik;
+import server.Restoran;
+import server.Rezervacija;
+import server.Sto;
+
+public class RezervacijaKorak2Controller extends HttpServlet {
+
+	private static final long serialVersionUID = -2827711076075549210L;
+
+	private static Logger log = Logger.getLogger(RezervacijaKorak2Controller.class);
+	
+	@EJB
+	private RestoranDaoLocal restoranDao;
+	
+	@EJB
+	private RezervacijaDaoLocal rezervacijaDao;
+	
+	@EJB
+	private StoDaoLocal stoDao;
+
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("posetilac")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			System.out.println("************korak 2 rezervacije zapocet");
+			Korisnik posetilac = (Korisnik)request.getSession().getAttribute("posetilac");
+			System.out.println("posetilac: " + posetilac);
+			
+			Restoran res = restoranDao.findById(Integer.parseInt(request.getParameter("id")));
+			//request.setAttribute("res", res);
+			
+			String danStr = request.getParameter("dan");
+			String mesecStr = request.getParameter("mesec");
+			String godinaStr = request.getParameter("godina");
+			String satStr = request.getParameter("sat");
+			String minutStr = request.getParameter("minut");
+			String trajanjeStr = request.getParameter("trajanje");
+			
+			Integer dan = 0;
+			Integer mesec = 0;
+			Integer godina = 0;
+			Integer sat = 0;
+			Integer minut = 0;
+			Integer trajanje = 0;
+			
+			try {
+				dan = Integer.parseInt(danStr);
+			} catch (Exception e) {
+				//nije broj
+			}
+			
+			try {
+				mesec = Integer.parseInt(mesecStr);
+			} catch (Exception e) {
+				//nije broj
+			}
+			
+			try {
+				godina = Integer.parseInt(godinaStr);
+			} catch (Exception e) {
+				//nije broj
+			}
+			
+			try {
+				sat = Integer.parseInt(satStr);
+			} catch (Exception e) {
+				//nije broj
+			}
+			
+			try {
+				minut = Integer.parseInt(minutStr);
+			} catch (Exception e) {
+				//nije broj
+			}
+			
+			try {
+				trajanje = Integer.parseInt(trajanjeStr);
+			} catch (Exception e) {
+				//nije broj
+			}
+			
+			Date datumRezervacije = new Date(godina-1900, mesec-1, dan, sat, minut);
+			//***OBRISATI OVO IZ SESIJE KADA SE KREIRA REZERVACIJA!!!!!!!!!!!!!!!!!!!
+			System.out.println("datum rezervacije: " + datumRezervacije);
+			request.getSession().setAttribute("datum", datumRezervacije);
+			System.out.println("restoran: " + res);
+			request.getSession().setAttribute("res", res);
+			System.out.println("datumStr: " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(datumRezervacije));
+			request.getSession().setAttribute("datumStr", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(datumRezervacije));
+			System.out.println("trajanje: " + trajanje);
+			request.getSession().setAttribute("trajanje", trajanje);
+			//***********************************************************************
+			Date krajNoveRez = new Date(datumRezervacije.getTime());
+			//Date krajNoveRez = datumRezervacije;
+			krajNoveRez.setHours(datumRezervacije.getHours() + trajanje);
+			ArrayList<Sto> stolovi = new ArrayList<Sto>();
+			ArrayList<Boolean> zauzeti = new ArrayList<Boolean>();
+			for (Sto s : stoDao.findStoloviRestorana(res)) {
+				Boolean zauzet = false;
+				System.out.println("@@@@@@@@@@@@@@@@@@@sto koji se rezervise: " + s);
+				for (Rezervacija rez : rezervacijaDao.findRezervacijeZaSto(s)) {
+					//********poredjenje da li je sto rezervisan u tom vremenskom intervalu
+					Date pocetakPostojeceRez = rez.getDatumVreme();
+					System.out.println("pocetak postojece rezervacije za sto: " + pocetakPostojeceRez);
+					Date krajPostojeceRez = new Date(pocetakPostojeceRez.getTime());
+					krajPostojeceRez.setHours(pocetakPostojeceRez.getHours() + rez.getTrajanje());
+					System.out.println("kraj postojece rezervacije za sto: " + krajPostojeceRez);
+					
+					//provera da li se ta 2 intervala seku (delimicno ili potpuno preklapaju)
+					boolean uslov1 = (krajNoveRez.compareTo(pocetakPostojeceRez)<0);
+					System.out.println(uslov1 + ": <<<" + krajNoveRez + ">>> MANJI OD <<<" + pocetakPostojeceRez + ">>>");
+					boolean uslov2 = (datumRezervacije.compareTo(krajPostojeceRez)>0);
+					System.out.println(uslov2 + ": <<<" + datumRezervacije + " >>> VECI OD <<<" + krajPostojeceRez + ">>>");
+					if (!(uslov1 || uslov2)) {
+						System.out.println(" je zauzet za planirani interval: " + datumRezervacije + " do " + krajNoveRez);
+						zauzet = true;
+						break;
+					}
+					/*if (!(krajNoveRez.compareTo(pocetakPostojeceRez)<0 || datumRezervacije.compareTo(krajPostojeceRez)>0)) {
+						zauzet = true;
+						break;
+					}*/
+					//*********************************************************************
+				}
+				System.out.println("Sto " + s + zauzet + " zauzet za termin od " + datumRezervacije + " do " + krajNoveRez);
+				stolovi.add(s);
+				zauzeti.add(zauzet);
+			}
+			request.setAttribute("stolovi", stolovi);
+			request.setAttribute("zauzeti", zauzeti);
+					
+			
+			System.out.println("parametri za korak 2 rezervacije prosledjeni na jsp");
+			getServletContext().getRequestDispatcher("/rezervacijaKorak2.jsp").forward(request, response);
+			return;
+			
+		} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+	
+	
+}

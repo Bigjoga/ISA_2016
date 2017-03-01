@@ -1,0 +1,298 @@
+package session;
+
+import java.util.Date;
+
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import entity.Gorivo;
+import entity.Jelo;
+import entity.Jelovnik;
+import entity.Korisnik;
+import entity.Menjac;
+import entity.OcenaPrijatelja;
+import entity.PozivPrijatelja;
+import entity.Prijatelji;
+import entity.Restoran;
+import entity.Rezervacija;
+import entity.RezervisaniStolovi;
+import entity.StavkaJelovnika;
+import entity.Sto;
+import entity.UlogaKorisnika;
+
+@Stateless
+@Remote(Init.class)
+public class InitBean implements Init {
+
+	@PersistenceContext(unitName = "Vezbe09")
+	EntityManager em;
+	
+	public void init() {
+		
+		Restoran rst1 = new Restoran("fensi kafanica", "jako fensi", 4, 5, 4.6, 23, "Sremska 4, Novi Sad, Srbija");
+		em.persist(rst1);
+		
+		Restoran rst2 = new Restoran("mesnata idila", "puno mesa", 2, 3, 4.4, 14, "Fruskogorska 5, Novi Sad, Srbija");
+		em.persist(rst2);
+		
+		
+		UlogaKorisnika adminUloga = new UlogaKorisnika();
+		adminUloga.setNazivUloge("administrator");
+		em.persist(adminUloga);
+		
+		UlogaKorisnika menadzerUloga = new UlogaKorisnika();
+		menadzerUloga.setNazivUloge("menadzer");
+		em.persist(menadzerUloga);
+		
+		UlogaKorisnika posetilacUloga = new UlogaKorisnika();
+		posetilacUloga.setNazivUloge("posetilac");
+		em.persist(posetilacUloga);
+		
+		
+		Korisnik kor1 = new Korisnik("djole@gmail.com", "djole", "Djordje Mutic", "Rumenacka 3, Novi Sad, Srbija", adminUloga, null);
+		em.persist(kor1);
+		adminUloga.add(kor1);
+		em.persist(adminUloga);
+		
+		Korisnik kor2 = new Korisnik("miki@gmail.com", "miki", "Milan Mutic", "Sarajevska 5, Novi Sad, Srbija", menadzerUloga, rst1);
+		em.persist(kor2);
+		menadzerUloga.add(kor2);
+		em.persist(menadzerUloga);
+		
+		Korisnik kor25 = new Korisnik("nekic@gmail.com", "nekic", "Neki Nekic", "Sarajevska 5, Novi Sad, Srbija", menadzerUloga, rst2);
+		em.persist(kor25);
+		menadzerUloga.add(kor25);
+		em.persist(menadzerUloga);
+		
+		Korisnik kor27 = new Korisnik("mare@gmail.com", "mare", "Mare Maric", "Sarajevska 5, Novi Sad, Srbija", menadzerUloga, rst2);
+		em.persist(kor27);
+		menadzerUloga.add(kor27);
+		em.persist(menadzerUloga);
+		
+		Korisnik kor3 = new Korisnik("pera@gmail.com", "pera", "Petar Peric", "Nikole Tesle 5, Novi Sad, Srbija", posetilacUloga, null);
+		em.persist(kor3);
+		posetilacUloga.add(kor3);
+		em.persist(posetilacUloga);
+		
+		Korisnik kor4 = new Korisnik("zika@gmail.com", "zika", "Zika Zikic", "Sremska 5, Novi Sad, Srbija", posetilacUloga, null);
+		em.persist(kor4);
+		posetilacUloga.add(kor4);
+		em.persist(posetilacUloga);
+		
+		Korisnik kor5 = new Korisnik("mane@gmail.com", "mane", "Mane Manic", "Bulevar Evrope 14, Novi Sad, Srbija", posetilacUloga, null);
+		em.persist(kor5);
+		posetilacUloga.add(kor5);
+		em.persist(posetilacUloga);
+		
+		Korisnik kor6 = new Korisnik("gocaveseli@gmail.com", "takac", "Silvester Takac", "Heroja Pinkija 16, Novi Sad, Srbija", posetilacUloga, null);
+		em.persist(kor6);
+		posetilacUloga.add(kor6);
+		em.persist(posetilacUloga);
+		
+		Korisnik kor7 = new Korisnik("muticdjordje@gmail.com", "petar", "Petar Nikezic", "Narodnog fronta 30, Novi Sad, Srbija", posetilacUloga, null);
+		em.persist(kor7);
+		posetilacUloga.add(kor7);
+		em.persist(posetilacUloga);
+		
+		//Korisnik kor8 = new Korisnik("muticmilan93@gmail.com", "toza", "Todor Veselinovic", "salajka", posetilacUloga, null);
+		Korisnik kor8 = new Korisnik("toza@gmail.com", "toza", "Todor Veselinovic", "Prvomajska 5, Subotica, Srbija", posetilacUloga, null);
+		em.persist(kor8);
+		posetilacUloga.add(kor8);
+		em.persist(posetilacUloga);
+		
+		
+		/*Prijatelji pr33 = new Prijatelji(kor3, kor3);
+		em.persist(pr33);
+		
+		Prijatelji pr44 = new Prijatelji(kor4, kor4);
+		em.persist(pr44);
+		
+		Prijatelji pr55 = new Prijatelji(kor5, kor5);
+		em.persist(pr55);
+		
+		Prijatelji pr66 = new Prijatelji(kor6, kor6);
+		em.persist(pr66);
+		
+		Prijatelji pr77 = new Prijatelji(kor7, kor7);
+		em.persist(pr77);
+		
+		Prijatelji pr88 = new Prijatelji(kor8, kor8);
+		em.persist(pr88);*/
+		
+		
+		Prijatelji pr1 = new Prijatelji(kor3, kor4);
+		em.persist(pr1);
+		
+		Prijatelji pr2 = new Prijatelji(kor6, kor3);
+		em.persist(pr2);
+		
+		Prijatelji pr3 = new Prijatelji(kor4, kor7);
+		em.persist(pr3);
+
+		Prijatelji pr4 = new Prijatelji(kor8, kor3);
+		em.persist(pr4);
+		
+		Prijatelji pr5 = new Prijatelji(kor5, kor7);
+		em.persist(pr5);
+		
+		Prijatelji pr6 = new Prijatelji(kor5, kor4);
+		em.persist(pr6);
+		
+		Prijatelji pr7 = new Prijatelji(kor8, kor6);
+		em.persist(pr7);
+		
+		
+		/*Restoran rst1 = new Restoran("fensi kafanica", "jako fensi", 39, 2, 4.6, 23);
+		em.persist(rst1);
+		
+		kor27.setRestoran(rst1);
+		em.persist(kor27);
+		rst1.add(kor27);
+		em.persist(rst1);
+		
+		Restoran rst2 = new Restoran("mesnata idila", "puno mesa", 2, 3, 4.4, 14);
+		em.persist(rst2);
+		
+		kor2.setRestoran(rst2);
+		em.persist(kor2);
+		rst2.add(kor2);
+		em.persist(rst2);
+		
+		kor25.setRestoran(rst2);
+		em.persist(kor25);
+		rst2.add(kor25);
+		em.persist(rst2);*/
+		
+		Jelovnik jlk1 = new Jelovnik("italijanska kuhinja", rst1);
+		em.persist(jlk1);
+		rst1.add(jlk1);
+		em.persist(rst1);
+		
+		Jelovnik jlk2 = new Jelovnik("domaca kuhinja", rst2);
+		em.persist(jlk2);
+		rst2.add(jlk2);
+		em.persist(rst2);
+		
+		Jelovnik jlk3 = new Jelovnik("sve po malo", rst1);
+		em.persist(jlk3);
+		rst1.add(jlk3);
+		em.persist(rst1);
+		
+		Jelo jel1 = new Jelo("spagete", "zdravo do bola");
+		em.persist(jel1);
+		
+		Jelo jel2 = new Jelo("prasetina", "samo necural");
+		em.persist(jel2);
+		
+		Jelo jel3 = new Jelo("zablji bataci", "specijalitet");
+		em.persist(jel3);
+		
+		Jelo jel4 = new Jelo("karadjordjeva snicla", "jako dobro");
+		em.persist(jel4);
+		
+		Jelo jel5 = new Jelo("belo meso", "ogranska pilad");
+		em.persist(jel5);
+		
+		//**********fali ADD***************************************************
+		StavkaJelovnika stavka1 = new StavkaJelovnika(19.14, jlk1, jel1);
+		em.persist(stavka1);
+		
+		StavkaJelovnika stavka2 = new StavkaJelovnika(99.99, jlk2, jel2);
+		em.persist(stavka2);
+		
+		StavkaJelovnika stavka3 = new StavkaJelovnika(66.89, jlk1, jel3);
+		em.persist(stavka3);
+		
+		//******************OVO PRVO TREBVA IZRACUNATI KOJE VREDNOSTI STAVITI*****************
+		//****za svaki restoran gde se pojavila rezervacija i za svakog posetioca*************
+		OcenaPrijatelja op1 = new OcenaPrijatelja(4.65, kor3, rst1);
+		em.persist(op1);
+		
+		OcenaPrijatelja op2 = new OcenaPrijatelja(4.44, kor4, rst1);
+		em.persist(op2);
+		//************************************************************************************
+		
+		Sto sto1 = new Sto("gornji levi", 2, 1, 3, rst1);
+		em.persist(sto1);
+		
+		Sto sto2 = new Sto("u cosku", 1, 0, 4, rst2);
+		em.persist(sto2);
+		
+		Sto sto3 = new Sto("novi sto", 3, 4, 5, rst1);
+		em.persist(sto3);
+		
+		Rezervacija rez1 = new Rezervacija(new Date(115, 11, 27), 2, kor3, rst1);
+		em.persist(rez1);
+		
+		Rezervacija rez2 = new Rezervacija(new Date(115, 3, 6), 2, kor7, rst2);
+		em.persist(rez2);
+		
+		Rezervacija rez3 = new Rezervacija(new Date(115, 2, 7), 2, kor3, rst1);
+		em.persist(rez3);
+		
+		
+		RezervisaniStolovi rezSt1 = new RezervisaniStolovi(rez1, sto1);
+		em.persist(rezSt1);
+		
+		RezervisaniStolovi rezSt2 = new RezervisaniStolovi(rez2, sto2);
+		em.persist(rezSt2);
+		
+		RezervisaniStolovi rezSt3 = new RezervisaniStolovi(rez3, sto1);
+		em.persist(rezSt3);
+		
+		RezervisaniStolovi rezSt4 = new RezervisaniStolovi(rez3, sto3);
+		em.persist(rezSt4);
+		
+		
+		PozivPrijatelja pp1 = new PozivPrijatelja(true, 3.6, kor3, rez1);
+		em.persist(pp1);
+		
+		PozivPrijatelja pp2 = new PozivPrijatelja(true, 4.1, kor3, rez2);
+		em.persist(pp2);
+		
+		PozivPrijatelja pp3 = new PozivPrijatelja(true, 5.0, kor7, rez2);
+		em.persist(pp3);
+		
+		PozivPrijatelja pp4 = new PozivPrijatelja(true, 4.8, kor3, rez3);
+		em.persist(pp4);
+		
+		PozivPrijatelja pp5 = new PozivPrijatelja(false, 0.0, kor7, rez3);
+		em.persist(pp5);
+		
+		PozivPrijatelja pp6 = new PozivPrijatelja(false, 0.0, kor8, rez1);
+		em.persist(pp6);
+		
+		PozivPrijatelja pp7 = new PozivPrijatelja(false, 0.0, kor4, rez1);
+		em.persist(pp7);
+		
+		PozivPrijatelja pp8 = new PozivPrijatelja(true, 2.0, kor5, rez2);
+		em.persist(pp8);
+		
+		PozivPrijatelja pp9 = new PozivPrijatelja(true, 3.5, kor6, rez2);
+		em.persist(pp9);
+		
+		PozivPrijatelja pp10 = new PozivPrijatelja(true, 1.0, kor5, rez1);
+		em.persist(pp10);
+		//**********kraj za FALI ADD***********************************************
+		
+		
+		Gorivo dizel = new Gorivo();
+		dizel.setTipGoriva("Dizel");
+		em.persist(dizel);
+		
+		Gorivo benzin = new Gorivo();
+		benzin.setTipGoriva("Benzin");
+		em.persist(benzin);
+		
+		Menjac automatski = new Menjac();
+		automatski.setTipMenjaca("Automatski");
+		em.persist(automatski);
+		
+		Menjac rucni = new Menjac();
+		rucni.setTipMenjaca("Manuelni");
+		em.persist(rucni);
+		
+	}
+}

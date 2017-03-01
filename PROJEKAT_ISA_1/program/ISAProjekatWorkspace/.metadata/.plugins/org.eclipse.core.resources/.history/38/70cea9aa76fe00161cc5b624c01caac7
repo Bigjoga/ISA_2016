@@ -1,0 +1,84 @@
+package server;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+@Entity
+@Table(name="Prijatelji", uniqueConstraints = @UniqueConstraint(columnNames = {"ID_kor_1", "ID_kor_2"}))
+@NamedQueries({
+	@NamedQuery(name = "findTorkePrijatelja", query = "SELECT p FROM Prijatelji p WHERE p.idKor1 = :korisnik OR p.idKor2 = :korisnik"),
+	@NamedQuery(name = "checkIfPrijatelji", query = "SELECT p FROM Prijatelji p WHERE (p.idKor1 = :korisnik1 AND p.idKor2 = :korisnik2) OR (p.idKor2 = :korisnik1 AND p.idKor1 = :korisnik2)")
+})
+public class Prijatelji implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 401493309622389231L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID_prijatelji", unique = true, nullable = false)
+	private Integer id;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_kor_1", referencedColumnName = "ID_korisnika", nullable = false)
+	private Korisnik idKor1;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_kor_2", referencedColumnName = "ID_korisnika", nullable = false)
+	private Korisnik idKor2;
+
+	public Prijatelji() {
+		super();
+	}
+
+	public Prijatelji(Korisnik idKor1, Korisnik idKor2) {
+		super();
+		this.idKor1 = idKor1;
+		this.idKor2 = idKor2;
+	}
+
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Korisnik getIdKor1() {
+		return idKor1;
+	}
+
+	public void setIdKor1(Korisnik idKor1) {
+		this.idKor1 = idKor1;
+	}
+
+	public Korisnik getIdKor2() {
+		return idKor2;
+	}
+
+	public void setIdKor2(Korisnik idKor2) {
+		this.idKor2 = idKor2;
+	}
+	
+	public String toString() {
+		return "(Jelo)[id=" + id + ",id_kor_1=" + idKor1.getId()  + ",id_kor_2=" + idKor2.getId() + "]";
+	}
+	
+	
+}

@@ -1,0 +1,76 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.Korisnik;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.Restoran;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.RestoranDaoLocal;
+
+public class RestoranUpdateController extends HttpServlet {
+
+	private static final long serialVersionUID = 1801825289551797559L;
+
+	private static Logger log = Logger.getLogger(RestoranUpdateController.class);
+	
+	@EJB
+	private RestoranDaoLocal restoranDao;
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("admin")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			
+			System.out.println("************izmena restorana zapoceta");
+			Korisnik admin = (Korisnik)request.getSession().getAttribute("admin");
+			System.out.println("admin: " + admin);
+			
+			String restoranId = request.getParameter("id");
+			if (restoranId == null) {
+				getServletContext().getRequestDispatcher("/PocetnaAdminController").forward(request, response);	
+				//response.sendRedirect(response.encodeURL("./jelovniciMenadzer.jsp"));
+				return;
+			}
+			
+			//****izmena restorana**********
+			Restoran restoranZaIzmenu = restoranDao.findById(Integer.parseInt(restoranId));
+			restoranZaIzmenu.setNazivRestorana(request.getParameter("naziv"));
+			restoranZaIzmenu.setOpisRestorana(request.getParameter("opis"));
+			restoranZaIzmenu.setAdresa(request.getParameter("adresa"));
+			restoranZaIzmenu.setDimX(Integer.parseInt(request.getParameter("dimX")));
+			restoranZaIzmenu.setDimY(Integer.parseInt(request.getParameter("dimY")));
+			System.out.println("restoran spreman za izmenu: " + restoranZaIzmenu);
+			restoranDao.merge(restoranZaIzmenu);
+			System.out.println("izmena restorana sacuvana");
+			//*****************************
+			
+			getServletContext().getRequestDispatcher("/PocetnaAdminController").forward(request, response);
+			return;
+			
+		} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+	
+	
+}

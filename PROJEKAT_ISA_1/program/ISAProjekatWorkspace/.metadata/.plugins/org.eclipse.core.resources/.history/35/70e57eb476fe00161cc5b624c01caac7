@@ -1,0 +1,60 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.JeloDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.KorisnikDaoLocal;
+
+public class JelaAdminController extends HttpServlet {
+
+	private static final long serialVersionUID = -4734357270031718388L;
+
+	private static Logger log = Logger.getLogger(JelaAdminController.class);
+	
+	@EJB
+	private JeloDaoLocal jeloDao;
+	
+	@EJB
+	private KorisnikDaoLocal korisnikDao;
+	
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("admin")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			
+			System.out.println("zapoceto prikazivanje svih jela");
+			
+			request.setAttribute("jela", jeloDao.findAll());
+			
+			System.out.println("parametri neophodni za prikazivanje svih jela prosledjeni na jsp");
+			
+			getServletContext().getRequestDispatcher("/jelaAdmin.jsp").forward(request, response);
+		
+		} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}	
+	
+	
+}

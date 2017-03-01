@@ -1,0 +1,176 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import entity.Jelovnik;
+import entity.Restoran;
+import entity.StavkaJelovnika;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.JelovnikDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.StavkaJelovnikaDaoLocal;
+
+public class JelovnikCRUDController extends HttpServlet {
+
+	private static final long serialVersionUID = 7207696121368491541L;
+
+	private static Logger log = Logger.getLogger(JelovnikCRUDController.class);
+	
+	@EJB
+	JelovnikDaoLocal jelovnikDao;
+	
+	@EJB
+	StavkaJelovnikaDaoLocal stavkaDao;
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("menadzer")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			HttpSession session = request.getSession(true);
+			Restoran restoran = (Restoran)session.getAttribute("restoran");
+			
+			if (request.getParameter("op").equals("0")) {
+				System.out.println("************dodavanje jelovnika zapoceto");
+				//dodavanje jelovnika**********************************************
+				String naziv = request.getParameter("naziv");
+				System.out.println("naziv: " + naziv);
+				System.out.println("restoran: " + restoran);
+				if (naziv == null) {
+					request.setAttribute("jelovnici", jelovnikDao.findJelovniciRestorana(restoran));
+					response.sendRedirect(response.encodeURL("./jelovniciMenadzer.jsp"));
+					return;
+				}
+				jelovnikDao.persist(new Jelovnik(naziv, restoran));
+				getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+				return;
+				//jelovnikDao.persist(new Jelovnik(naziv, (Restoran)session.getAttribute("restoran")));
+				
+			} else if (request.getParameter("op").equals("1")) {
+				System.out.println("************citanje jelovnika zapoceto");
+				//citanje jelovnika************************************************
+				String jelovnikId = request.getParameter("id");
+				if (jelovnikId == null) {
+					getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+					//response.sendRedirect(response.encodeURL("./jelovniciMenadzer.jsp"));
+					return;
+				}
+				Jelovnik jelovnik = jelovnikDao.findById(Integer.parseInt(jelovnikId));
+				System.out.println("jelovnik koji se cita: " + jelovnik);
+				//request.setAttribute("restoran", jelovnik.getRestoran());
+				request.setAttribute("jelovnik", jelovnik);
+				request.setAttribute("stavkeJelovnika", stavkaDao.findStavkeJelovnika(jelovnik));
+				System.out.println("pronadjene stavke jelovnika za odgovarajuci jelovnik");
+				getServletContext().getRequestDispatcher("/jelovnikRead.jsp").forward(request, response);
+				return;
+			} else if (request.getParameter("op").equals("2")) {
+				System.out.println("************izmena jelovnika zapoceta");
+				//citanje jelovnika************************************************
+				String jelovnikId = request.getParameter("id");
+				if (jelovnikId == null) {
+					getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+					//response.sendRedirect(response.encodeURL("./jelovniciMenadzer.jsp"));
+					return;
+				}
+				Jelovnik jelovnik = jelovnikDao.findById(Integer.parseInt(jelovnikId));
+				System.out.println("jelovnik koji se menja: " + jelovnik);
+				String naziv = request.getParameter("naziv");
+				
+				//****proba za varanje merge!!!
+				Jelovnik jlk = new Jelovnik(jelovnik.getNazivJelovnika(), jelovnik.getRestoran());
+				jlk.setId(new Integer(jelovnik.getId()));
+				jelovnikDao.merge(jlk);
+				//****************************
+				/*jelovnik.setNazivJelovnika(naziv);
+				jelovnikDao.merge(jelovnik);*/
+				System.out.println("novi naziv jelovnika: " + naziv);
+				ArrayList<StavkaJelovnika> stavke = stavkaDao.findStavkeJelovnika(jelovnik);
+				for (StavkaJelovnika st : stavke) {
+					System.out.println("stara stavka: " + st);
+					Double cena = Double.parseDouble(request.getParameter("cena"+st.getId()));
+					System.out.println("nova cena: " + cena);
+					StavkaJelovnika novaStavka = stavkaDao.findById(st.getId());
+					System.out.println("stavka koja se menja: " + novaStavka);
+					novaStavka.setCena(cena);
+					System.out.println("nova cena nove stavke: " + novaStavka.getCena());
+					//stavkaDao.merge(novaStavka);
+					System.out.println("setovana nova cena za stavku: " + novaStavka);
+				}
+				
+				getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);
+				return;
+			} else if (request.getParameter("op").equals("3")) {
+				System.out.println("************brisanje jelovnika zapoceto");
+				//brisanje jelovnika************************************************
+				request.setAttribute("jelovnici", jelovnikDao.findJelovniciRestorana(restoran));
+				String jelovnikId = request.getParameter("id");
+				if (jelovnikId == null) {
+					getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+					//response.sendRedirect(response.encodeURL("./jelovniciMenadzer.jsp"));
+					return;
+				}
+				Jelovnik jelovnik = jelovnikDao.findById(Integer.parseInt(jelovnikId));
+				System.out.println("brise se jelovnik: "  + jelovnik);
+				jelovnikDao.remove(jelovnik);
+				
+				System.out.println("obrisan jelovnik: " + jelovnik);
+				
+				//request.setAttribute("restoran", jelovnik.getRestoran());
+				request.setAttribute("jelovnici", jelovnikDao.findJelovniciRestorana(restoran));
+				
+				System.out.println("preziveli jelovnici:");
+				
+				for (Jelovnik j : jelovnikDao.findJelovniciRestorana(restoran)) {
+					System.out.println(j);
+				}
+				getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+				//getServletContext().getRequestDispatcher("/jelovniciMenadzer.jsp").forward(request, response);
+				return;
+			}  else if (request.getParameter("op").equals("4")) {
+				System.out.println("************priprema za izmenu jelovnika zapoceta");
+				//priprema izmene jelovnika************************************************
+				request.setAttribute("jelovnici", jelovnikDao.findJelovniciRestorana(restoran));
+				String jelovnikId = request.getParameter("id");
+				if (jelovnikId == null) {
+					getServletContext().getRequestDispatcher("/JelovniciMenadzerController").forward(request, response);	
+					//response.sendRedirect(response.encodeURL("./jelovniciMenadzer.jsp"));
+					return;
+				}
+				Jelovnik jelovnik = jelovnikDao.findById(Integer.parseInt(jelovnikId));
+				System.out.println("popunjavanje za izmenu jelovnika: "  + jelovnik);
+				
+				request.setAttribute("jelovnik", jelovnik);
+				request.setAttribute("stavkeJelovnika", stavkaDao.findStavkeJelovnika(jelovnik));
+				
+				System.out.println("pripremljene info za izmenu jelovnika: " + jelovnik);
+				
+				getServletContext().getRequestDispatcher("/jelovnikUpdate.jsp").forward(request, response);
+				return;
+			} 
+			
+		} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}	
+	
+	
+}

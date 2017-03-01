@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<openejb-jar xmlns="http://www.openejb.org/openejb-jar/1.1">
+    <properties></properties>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="RezervisaniStoloviDaoBean" ejb-name="RezervisaniStoloviDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="StavkaJelovnikaDaoBean" ejb-name="StavkaJelovnikaDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="GorivoDaoBean" ejb-name="GorivoDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="JeloDaoBean" ejb-name="JeloDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="MenjacDaoBean" ejb-name="MenjacDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="UlogaKorisnikaDaoBean" ejb-name="UlogaKorisnikaDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="RestoranDaoBean" ejb-name="RestoranDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="PozivPrijateljaDaoBean" ejb-name="PozivPrijateljaDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="StoDaoBean" ejb-name="StoDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="OcenaPrijateljaDaoBean" ejb-name="OcenaPrijateljaDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="JelovnikDaoBean" ejb-name="JelovnikDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="VoziloDaoBean" ejb-name="VoziloDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="RezervacijaDaoBean" ejb-name="RezervacijaDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="PrijateljiDaoBean" ejb-name="PrijateljiDaoBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="InitBean" ejb-name="InitBean"/>
+    <ejb-deployment container-id="My Stateless Container" deployment-id="KorisnikDaoBean" ejb-name="KorisnikDaoBean"/>
+    <ejb-deployment container-id="Default MDB Container" deployment-id="RegistracijaBean" ejb-name="RegistracijaBean">
+        <resource-link res-id="RegistracijaQueue" res-ref-name="openejb/destination"/>
+        <resource-link res-id="Mail" res-ref-name="java:comp/env/Mail"/>
+        <properties></properties>
+    </ejb-deployment>
+    <ejb-deployment container-id="Default MDB Container" deployment-id="PaymentBean" ejb-name="PaymentBean">
+        <resource-link res-id="PaymentQueue" res-ref-name="openejb/destination"/>
+        <resource-link res-id="Mail" res-ref-name="java:comp/env/Mail"/>
+        <properties></properties>
+    </ejb-deployment>
+</openejb-jar>

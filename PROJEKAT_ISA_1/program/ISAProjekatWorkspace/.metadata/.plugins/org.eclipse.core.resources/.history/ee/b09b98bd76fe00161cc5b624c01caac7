@@ -1,0 +1,71 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.persistence.Query;
+
+import entity.Korisnik;
+import entity.PozivPrijatelja;
+import entity.Restoran;
+import entity.Rezervacija;
+
+@Stateless
+@Local(PozivPrijateljaDaoLocal.class)
+public class PozivPrijateljaDaoBean extends GenericDaoBean<PozivPrijatelja, Integer> implements PozivPrijateljaDaoLocal {
+
+	public ArrayList<PozivPrijatelja> findPoseteKorisnika(Korisnik korisnik) {
+		ArrayList<PozivPrijatelja> ret = new ArrayList<PozivPrijatelja>();
+		Query q = em
+				.createNamedQuery("findPoseteKorisnika");
+		q.setParameter("korisnik", korisnik);
+		for (Object o : q.getResultList()) {
+			ret.add((PozivPrijatelja)o);
+		}
+		return ret;
+	}
+	public Double findProsecnaOcenaRestorana(Restoran res) {
+		Double ret = 0.0;
+		Query q = em
+				.createNamedQuery("findProsecnaOcenaRestorana");
+		q.setParameter("restoran", res);
+		
+		Double value = (Double)q.getSingleResult();
+		///////**************ZAOKRUZIVANJE NA 2 DECIMALE!!!
+		BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+	    ret = bd.doubleValue();
+		///////**************
+		
+		return ret;
+	}
+	
+	public ArrayList<PozivPrijatelja> findPoseteRestoranu(Restoran res) {
+		ArrayList<PozivPrijatelja> ret = new ArrayList<PozivPrijatelja>();
+		Query q = em
+				.createNamedQuery("findPoseteRestoranu");
+		q.setParameter("restoran", res);
+		for (Object o : q.getResultList()) {
+			ret.add((PozivPrijatelja)o);
+		}
+		
+		return ret;
+	}
+	
+	public ArrayList<Korisnik> findDrugiPosetiociRezervacije(Rezervacija rez, Korisnik kor) {
+		ArrayList<Korisnik> ret = new ArrayList<Korisnik>();
+		Query q = em
+				.createNamedQuery("findDrugiPosetiociRezervacije");
+		q.setParameter("rezervacija", rez);
+		q.setParameter("korisnik", kor);
+		for (Object o : q.getResultList()) {
+			ret.add((Korisnik)o);
+		}
+		
+		return ret;
+	}
+
+}

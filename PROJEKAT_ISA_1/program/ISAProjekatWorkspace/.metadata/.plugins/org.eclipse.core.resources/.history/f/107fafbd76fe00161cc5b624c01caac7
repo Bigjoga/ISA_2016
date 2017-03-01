@@ -1,0 +1,51 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.persistence.Query;
+
+import entity.Korisnik;
+import entity.Restoran;
+
+@Stateless
+@Local(KorisnikDaoLocal.class)
+public class KorisnikDaoBean extends GenericDaoBean<Korisnik, Integer>
+		implements KorisnikDaoLocal {
+
+	public Korisnik findKorisnikSaEmailomILozinkom(
+			String email, String lozinka) {
+		Query q = em
+				.createNamedQuery("findKorisnikSaEmailomILozinkom");
+		q.setParameter("email", email);
+		q.setParameter("lozinka", lozinka);
+		Korisnik result = (Korisnik) q.getSingleResult();
+		return result;
+	}
+
+	public ArrayList<Korisnik> findMenadzereRestorana(Restoran res) {
+		ArrayList<Korisnik> ret = new ArrayList<>();
+		Query q = em.createNamedQuery("findMenadzereRestorana");
+		q.setParameter("restoran", res);
+		for (Object o : q.getResultList()) {
+			ret.add((Korisnik)o);
+		}
+		return ret;
+	}
+
+	@Override
+	public Korisnik findKorisnikRegistracija(String email) {
+		Query q = em
+				.createNamedQuery("findKorisnikRegistracija");
+		System.out.println("kreiran upit");
+		q.setParameter("email", email);
+		//Korisnik result = (Korisnik) q.getSingleResult();
+		Korisnik result = null;
+		if (q.getResultList().size()>0) {
+			result = (Korisnik)q.getResultList().get(0);
+		}
+		return result;
+	}
+	
+}

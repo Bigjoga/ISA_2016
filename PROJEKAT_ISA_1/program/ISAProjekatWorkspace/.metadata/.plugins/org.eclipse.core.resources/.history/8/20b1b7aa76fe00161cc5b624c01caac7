@@ -1,0 +1,108 @@
+package server;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="Jelovnik")
+@NamedQueries({
+	@NamedQuery(name = "findJelovniciRestorana", query = "SELECT j FROM Jelovnik j WHERE j.restoran = :restoran")
+})
+public class Jelovnik implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4207135251892206235L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID_jelovnika", unique = true, nullable = false)
+	private Integer id;
+	
+	@Column(name = "Naziv_jelovnika", unique = false, nullable = false)
+	private String nazivJelovnika;
+	
+	@ManyToOne
+	@JoinColumn(name = "Restoran_ID", referencedColumnName = "ID_restorana", nullable = false)
+	private Restoran restoran;
+	
+	@OneToMany(cascade = { ALL }, fetch = EAGER, mappedBy = "jelovnik")
+	private Set<StavkaJelovnika> stavkeJelovnika = new HashSet<StavkaJelovnika>();
+
+	public void add(StavkaJelovnika s) {
+		if (s.getJelovnik() != null)
+			s.getJelovnik().getStavkeJelovnika().remove(s);
+		s.setJelovnik(this);
+		stavkeJelovnika.add(s);
+	}
+
+	public void remove(StavkaJelovnika s) {
+		s.setJelovnik(null);
+		stavkeJelovnika.remove(s);
+	}
+
+	public Jelovnik() {
+		super();
+	}
+
+	public Jelovnik(String nazivJelovnika, Restoran restoran) {
+		super();
+		this.nazivJelovnika = nazivJelovnika;
+		this.restoran = restoran;
+		//restoran.add(this);
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getNazivJelovnika() {
+		return nazivJelovnika;
+	}
+
+	public void setNazivJelovnika(String nazivJelovnika) {
+		this.nazivJelovnika = nazivJelovnika;
+	}
+
+	public Restoran getRestoran() {
+		return restoran;
+	}
+
+	public void setRestoran(Restoran restoran) {
+		this.restoran = restoran;
+	}
+
+	public Set<StavkaJelovnika> getStavkeJelovnika() {
+		return stavkeJelovnika;
+	}
+
+	public void setStavkeJelovnika(Set<StavkaJelovnika> stavkeJelovnika) {
+		this.stavkeJelovnika = stavkeJelovnika;
+	}
+	
+	public String toString() {
+		return "(Jelovnik)[id=" + id + ",naziv jelovnika=" + nazivJelovnika+ "]";
+	}
+	
+}

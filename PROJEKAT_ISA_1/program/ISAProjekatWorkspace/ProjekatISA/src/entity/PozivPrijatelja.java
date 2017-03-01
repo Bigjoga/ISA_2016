@@ -1,0 +1,111 @@
+package entity;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="PozivPrijatelja")
+@NamedQueries({											
+	@NamedQuery(name = "findPoseteKorisnika", query = "SELECT k FROM PozivPrijatelja k WHERE (k.korisnik = :korisnik) AND k.potvrdio = true"),
+	@NamedQuery(name = "findProsecnaOcenaRestorana", query = "SELECT AVG(p.ocena) FROM PozivPrijatelja p, Rezervacija rz WHERE rz.restoran = :restoran AND p.rezervacija = rz AND p.potvrdio = true AND p.ocena >= 1.0"),
+	@NamedQuery(name = "findPoseteRestoranu", query = "SELECT p FROM PozivPrijatelja p, Rezervacija rz WHERE rz.restoran = :restoran AND p.rezervacija = rz AND p.potvrdio = true"),
+	@NamedQuery(name = "findDrugiPosetiociRezervacije", query = "SELECT p.korisnik FROM PozivPrijatelja p WHERE p.rezervacija = :rezervacija AND p.korisnik <> :korisnik")
+})
+public class PozivPrijatelja implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1206334920302838385L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID_poziv_prijatelja", unique = true, nullable = false)
+	private Integer id;
+	
+	@Column(name = "Potvrdio", unique = false, nullable = false)
+	private Boolean potvrdio;
+	
+	@Column(name = "Ocena", unique = false, nullable = false)
+	private Double ocena;
+	
+	@ManyToOne
+	@JoinColumn(name = "Korisnik_ID", referencedColumnName = "ID_korisnika", nullable = false)
+	private Korisnik korisnik;
+	
+	@ManyToOne
+	@JoinColumn(name = "Rezervacija_ID", referencedColumnName = "ID_rezervacije", nullable = false)
+	private Rezervacija rezervacija;
+
+	public PozivPrijatelja() {
+		super();
+	}
+
+	public PozivPrijatelja(Boolean potvrdio, Double ocena, Korisnik korisnik,
+			Rezervacija rezervacija) {
+		super();
+		this.potvrdio = potvrdio;
+		this.ocena = ocena;
+		this.korisnik = korisnik;
+		this.rezervacija = rezervacija;
+	}
+
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Boolean getPotvrdio() {
+		return potvrdio;
+	}
+
+	public void setPotvrdio(Boolean potvrdio) {
+		this.potvrdio = potvrdio;
+	}
+
+	public Double getOcena() {
+		return ocena;
+	}
+
+	public void setOcena(Double ocena) {
+		this.ocena = ocena;
+	}
+
+	public Korisnik getKorisnik() {
+		return korisnik;
+	}
+
+	public void setKorisnik(Korisnik korisnik) {
+		this.korisnik = korisnik;
+	}
+
+	public Rezervacija getRezervacija() {
+		return rezervacija;
+	}
+
+	public void setRezervacija(Rezervacija rezervacija) {
+		this.rezervacija = rezervacija;
+	}
+	
+	public String toString() {
+		return "(PozivPrijatelja)[id=" + id + ",id prijatelja=" + korisnik.getId()+ "]";
+	}
+	
+}

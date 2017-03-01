@@ -1,0 +1,262 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.servlet;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.KorisnikDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.PozivPrijateljaDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.RezervacijaDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.RezervisaniStoloviDaoLocal;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.StoDaoLocal;
+import server.Korisnik;
+import server.PozivPrijatelja;
+import server.Restoran;
+import server.Rezervacija;
+import server.RezervisaniStolovi;
+import server.Sto;
+
+public class RezervacijaCreateController extends HttpServlet {
+
+	private static final long serialVersionUID = 6952891892919183940L;
+	
+	private static Logger log = Logger.getLogger(RezervacijaCreateController.class);
+	
+	@EJB
+	private StoDaoLocal stoDao;
+	
+	@EJB
+	private KorisnikDaoLocal korisnikDao;
+	
+	@EJB
+	private RezervacijaDaoLocal rezervacijaDao;
+	
+	@EJB
+	private PozivPrijateljaDaoLocal pozivPrijateljaDao;
+	
+	@EJB
+	private RezervisaniStoloviDaoLocal rezervisaniStoloviDao;
+	
+	@Resource(name="JmsConnectionFactory")
+	private ConnectionFactory qcf;
+
+	@Resource(name="PaymentQueue")
+	private Queue paymentQueue;
+
+	
+	protected synchronized void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			if ((request.getSession().getAttribute("posetilac")) == null) {
+				response.sendRedirect(response.encodeURL("./login.jsp"));
+				return;
+			}
+			
+			System.out.println("*************kreiranje rezervacije zapoceto");
+			Korisnik posetilac = (Korisnik)request.getSession().getAttribute("posetilac");
+			System.out.println("posetilac: " + posetilac);
+			
+			String prijateljiStringId = request.getParameter("id");
+			
+			if (prijateljiStringId == null) {
+				response.sendRedirect(response.encodeURL("./RestoraniPosetilacController"));
+				return;
+			}
+			String[] tokens = prijateljiStringId.split("_");
+			if (!prijateljiStringId.equals(""))
+				System.out.println("broj pozvanih prijatelja: " + tokens.length);
+			else
+				System.out.println("broj pozvanih prijatelja: 0");
+			
+			//@@@@@@@@@@@@@@@@@@STVARI KOJE SE PREUZIMAJU IZ SESIJE@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			Date datumRezervacije =  new Date(((Date)request.getSession().getAttribute("datum")).getTime());
+			System.out.println("datum rezervacije: " + datumRezervacije);
+			Restoran res = (Restoran)request.getSession().getAttribute("res");
+			System.out.println("restoran: " + res);
+			String datumStr = request.getSession().getAttribute("datumStr").toString();
+			System.out.println("datumStr: " + datumStr);
+			Integer trajanje = Integer.parseInt(request.getSession().getAttribute("trajanje").toString());
+			System.out.println("trajanje: " + trajanje);
+			ArrayList<Sto> stolovi = (ArrayList<Sto>)request.getSession().getAttribute("stolovi");
+			System.out.println("broj stolova za rezervaciju: " + stolovi.size());
+			
+			//***OBRISATI OVO IZNAD IZ SESIJE KADA SE KREIRA REZERVACIJA!!!!!!!!!!!!!!!!!!!
+			
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			
+			ArrayList<Korisnik> pozvaniKorisnici = new ArrayList<Korisnik>();
+			if (!prijateljiStringId.equals("")) {
+				for (String str : tokens) {
+					Integer korId = Integer.parseInt(str.substring(2));
+					Korisnik k = korisnikDao.findById(korId);
+					System.out.println("pozvan korisnik: " + k);
+					pozvaniKorisnici.add(k);
+				}
+			}
+			
+			//@@@@@@@@@ URADITI PROVERU DA LI JE >>BILO KOJI<< OD TRAZENIH STOLOVA@@@@@@@@@@@@@@
+			//@@@@@@@@@@@ U MEDJUVREMENU REZERVISAN!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			Date krajNoveRez = new Date(datumRezervacije.getTime());
+			//Date krajNoveRez = datumRezervacije;
+			krajNoveRez.setHours(datumRezervacije.getHours() + trajanje);
+			System.out.println("@@@@@@@@@@@@@@@@@@@AJDE@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ posetilac: " + posetilac);
+			for (Sto s : stolovi) {
+				Boolean zauzet = false;
+				System.out.println("@@@@@@@@@@@@@@@@@@@sto koji se rezervise: " + s);
+				for (Rezervacija rez : rezervacijaDao.findRezervacijeZaSto(s)) {
+					//********poredjenje da li je sto rezervisan u tom vremenskom intervalu
+					Date pocetakPostojeceRez = rez.getDatumVreme();
+					System.out.println("pocetak postojece rezervacije za sto: " + pocetakPostojeceRez);
+					Date krajPostojeceRez = new Date(pocetakPostojeceRez.getTime());
+					krajPostojeceRez.setHours(pocetakPostojeceRez.getHours() + rez.getTrajanje());
+					System.out.println("kraj postojece rezervacije za sto: " + krajPostojeceRez);
+					
+					//provera da li se ta 2 intervala seku (delimicno ili potpuno preklapaju)
+					boolean uslov1 = (krajNoveRez.compareTo(pocetakPostojeceRez)<0);
+					System.out.println(uslov1 + ": <<<" + krajNoveRez + ">>> MANJI OD <<<" + pocetakPostojeceRez + ">>>");
+					boolean uslov2 = (datumRezervacije.compareTo(krajPostojeceRez)>0);
+					System.out.println(uslov2 + ": <<<" + datumRezervacije + " >>> VECI OD <<<" + krajPostojeceRez + ">>>");
+					if (!(uslov1 || uslov2)) {
+						System.out.println(s + " je zauzet za planirani interval: " + datumRezervacije + " do " + krajNoveRez);
+						zauzet = true;
+						//****brisanje iz sesije svih atributa potrebnih za rezervaciju
+						request.getSession().removeAttribute("datum");
+						request.getSession().removeAttribute("res");
+						request.getSession().removeAttribute("datumStr");
+						request.getSession().removeAttribute("trajanje");
+						request.getSession().removeAttribute("stolovi");
+						System.out.println("kreiranje rezervacije onemoguceno jer je " + s + " u medjuvremenu zauzet od strane drugog korisnika za dati period");
+						response.sendRedirect(response.encodeURL("./rezervacijaFail.jsp"));
+						return;
+						//*************************************************************
+					}
+				}
+			}
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			
+			System.out.println("KREIRANJE REZERVACIJE MOZE DA POCNE!");
+			//@@@@@@@@ na messageBean poslati objekat koji predstavlja niz objekata
+			//@@@@@@@@@@@ prvi element bi bio korisnik, drugi rezervacija
+			
+			
+			
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			//KREIRATI REZERVACIJU PRETHODNO!!!
+			Rezervacija novaRezervacija = new Rezervacija(datumRezervacije, trajanje, posetilac, res);
+			System.out.println("torka rezervacija: "+ novaRezervacija);
+			rezervacijaDao.persist(novaRezervacija);
+			System.out.println("nova rezervacija: " + novaRezervacija);
+			//********* KRAEIRATI I REZERVISANE STOLOVE ***********
+			for (Sto s : stolovi) {
+				System.out.println("sto koji se rezervise: " + s);
+				RezervisaniStolovi rezSto = new RezervisaniStolovi(novaRezervacija, s);
+				System.out.println("torka rezervisaniSto: " + rezSto);
+				rezervisaniStoloviDao.persist(rezSto);
+			}
+			//*****************************************************
+			
+			//za kreatora rezervacije se podrazumeva da je prihvatio poziv (ali nije ocenio)
+			PozivPrijatelja pp = new PozivPrijatelja(true, 0.0, posetilac, novaRezervacija);
+			pozivPrijateljaDao.persist(pp);
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			
+			System.out.println("dodata pozivnica samom sebi: " + pp);
+			
+			//@@@@@@@@ pocetak slanja maila ako je potrebno @@@@@@@@
+			Connection connection = null;
+			Session session = null;
+			MessageProducer producer = null;
+			
+			try {
+				// Creates a connection
+				connection = qcf.createConnection();
+
+				System.out.println("izmedju konekcije i sesije");
+	            // Creates a session
+	            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+				//*****za svakog pozvanog prijatelja po jedna pozivnica i jedan producer**********
+	            System.out.println("izmedju sesije i pozvanih korisnika");
+	            for (Korisnik kor : pozvaniKorisnici) {
+	            System.out.println("pozvan korisnik: " + kor);
+	            // Creates a message producer from the Session to the Topic or Queue
+	            producer = session.createProducer(paymentQueue);
+
+	            // Creates an object message
+	            ObjectMessage object = session.createObjectMessage();
+	            //@@@@kreiranje serializable objekta koji ce preneti info o prijatelju i pozivnici@@@@@@@@
+	            System.out.println("mail se salje korisniku: " + kor);
+	            PozivPrijatelja ppNovi = new PozivPrijatelja(false, 0.0, kor, novaRezervacija);
+	            pozivPrijateljaDao.persist(ppNovi);
+	            System.out.println("salje se na mail: " + pp.toString());
+	            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	            //object.setObject(new PaymentInfo(CardType.VISA, "111111111", "2008/12", new BigDecimal("1350.32")));
+	            //object.setObject(poz);
+	            //ipak proslediti samo poziv prijatelja zato sto u njemu vec imam pozvanog korisnika
+	            object.setObject(ppNovi);
+	            
+	            // Tells the producer to send the object message
+	            producer.send(object);
+	            
+	            // Closes the producer
+	            producer.close();
+	            
+	            }
+	            
+	            //*********************************************************************************
+	            
+	            // Closes the session
+	            session.close();
+	            
+	            // Closes the connection
+	            connection.close();
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+			
+			
+			
+			System.out.println("kreiranje rezervacije zavrseno");
+			//****brisanje iz sesije svih atributa potrebnih za rezervaciju
+			request.getSession().removeAttribute("datum");
+			request.getSession().removeAttribute("res");
+			request.getSession().removeAttribute("datumStr");
+			request.getSession().removeAttribute("trajanje");
+			request.getSession().removeAttribute("stolovi");
+			response.sendRedirect(response.encodeURL("./RestoraniPosetilacController"));
+			return;
+			//*************************************************************
+			
+		/*} catch (ServletException e) {
+			log.error(e);
+			throw e;
+		*/} catch (IOException e) {
+			log.error(e);
+			throw e;
+		}		
+	}
+
+	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+	
+
+}

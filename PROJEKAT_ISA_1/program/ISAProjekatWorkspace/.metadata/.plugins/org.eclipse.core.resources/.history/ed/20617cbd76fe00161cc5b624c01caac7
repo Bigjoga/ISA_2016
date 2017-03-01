@@ -1,0 +1,10 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import java.util.ArrayList;
+
+import entity.Restoran;
+import entity.Sto;
+
+public interface StoDaoLocal extends GenericDaoLocal<Sto, Integer> {
+	public ArrayList<Sto> findStoloviRestorana(Restoran res);
+}

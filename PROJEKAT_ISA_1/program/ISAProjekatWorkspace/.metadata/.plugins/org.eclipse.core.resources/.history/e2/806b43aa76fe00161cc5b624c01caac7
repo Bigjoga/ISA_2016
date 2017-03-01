@@ -1,0 +1,45 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.persistence.Query;
+
+import server.Korisnik;
+import server.Prijatelji;
+
+@Stateless
+@Local(PrijateljiDaoLocal.class)
+public class PrijateljiDaoBean extends GenericDaoBean<Prijatelji, Integer> implements PrijateljiDaoLocal {
+
+	public ArrayList<Korisnik> findPrijateljiKorisnika(Korisnik kor) {
+		ArrayList<Korisnik> ret = new ArrayList<Korisnik>();
+		Query q = em
+				.createNamedQuery("findTorkePrijatelja");
+		q.setParameter("korisnik", kor);
+		for (Object ob : q.getResultList()) {
+			Prijatelji pr = (Prijatelji)ob;
+			if (pr.getIdKor1().getId().toString().equals(kor.getId().toString())) {
+				
+				ret.add(pr.getIdKor2());
+			}
+			else if (pr.getIdKor2().getId().toString().equals(kor.getId().toString()))
+				ret.add(pr.getIdKor1());
+		}
+		return ret;
+	}
+
+	public Boolean checkIfPrijatelji(Korisnik kor1, Korisnik kor2) {
+		Boolean ret = false;
+		Query q = em
+				.createNamedQuery("checkIfPrijatelji");
+		q.setParameter("korisnik1", kor1);
+		q.setParameter("korisnik2", kor2);
+		if (q.getResultList().size()>0)
+			ret = true;
+		
+		return ret;
+	}
+
+}

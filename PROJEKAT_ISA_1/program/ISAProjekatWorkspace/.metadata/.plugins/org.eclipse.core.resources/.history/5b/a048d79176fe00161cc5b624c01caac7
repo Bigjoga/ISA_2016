@@ -1,0 +1,15 @@
+package rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session;
+
+import java.util.ArrayList;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.Korisnik;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.PozivPrijatelja;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.Restoran;
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.entity.Rezervacija;
+
+public interface PozivPrijateljaDaoLocal extends GenericDaoLocal<PozivPrijatelja, Integer> {
+	public ArrayList<PozivPrijatelja> findPoseteKorisnika(Korisnik korisnik);
+	public Double findProsecnaOcenaRestorana(Restoran res);
+	public ArrayList<PozivPrijatelja> findPoseteRestoranu(Restoran res);
+	public ArrayList<Korisnik> findDrugiPosetiociRezervacije(Rezervacija rez, Korisnik kor);
+}
