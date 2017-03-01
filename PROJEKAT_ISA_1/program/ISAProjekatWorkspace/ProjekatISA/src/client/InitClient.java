@@ -19,5 +19,4 @@ public class InitClient {
 		}
 	}
 }
-
-//nesto sada pisam ovede
+// kmitovanje
